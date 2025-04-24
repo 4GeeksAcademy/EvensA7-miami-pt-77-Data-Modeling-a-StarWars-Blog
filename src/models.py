@@ -20,9 +20,9 @@ class User(db.Model):
 
 class Characters(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
-    eye_color: Mapped[str] = mapped_column(nullable=False)
-    birth_year: Mapped[str] = mapped_column(String(10), nullable=False)
+    name: Mapped[str] = mapped_column(String(120))
+    eye_color: Mapped[str] = mapped_column()
+    birth_year: Mapped[str] = mapped_column(String(10))
     character_favorites: Mapped["Favorites"] = relationship(back_populates = "favorites_characters")
 
     def serialize(self):
@@ -35,9 +35,9 @@ class Characters(db.Model):
     
 class Planets(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
-    terrain: Mapped[str] = mapped_column(nullable=False)
-    population: Mapped[str] = mapped_column(String(100000000000), nullable=False)
+    name: Mapped[str] = mapped_column(String(120))
+    terrain: Mapped[str] = mapped_column()
+    population: Mapped[int] = mapped_column()
     planet_favorites: Mapped["Favorites"] = relationship(back_populates = "favorites_planets")
 
 
@@ -51,8 +51,8 @@ class Planets(db.Model):
 
 class Favorites(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    character_id: Mapped[int] = mapped_column(ForeignKey=("Characters.id"))
-    planet_id: Mapped[int] = mapped_column(ForeignKey=("Planets.id"))
+    character_id: Mapped[int] = mapped_column(ForeignKey("characters.id"))
+    planet_id: Mapped[int] = mapped_column(ForeignKey("planets.id"))
     favorites_characters: Mapped[list["Characters"]] = relationship(back_populates = "character_favorites")
     favorites_planets: Mapped[list["Planets"]] = relationship(back_populates = "planet_favorites")
 
@@ -60,6 +60,4 @@ class Favorites(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "eye_color": self.eye_color,
-            "birth_year": self.birth_year
         }
